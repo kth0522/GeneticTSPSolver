@@ -2,7 +2,6 @@ import numpy as np
 import random
 import operator
 import pandas as pd
-from tqdm import tqdm
 
 class City:
     def __init__(self, x, y, index):
@@ -19,7 +18,7 @@ class City:
     def __repr__(self):
         return str(self.index)
 
-
+# Sample the cities from city_list randomly, and create route.
 def create_route(city_list):
     route = random.sample(city_list, len(city_list))
     return route
@@ -45,11 +44,13 @@ class Fitness:
             self.distance = route_distance
         return self.distance
 
+    # If the distance decrease, fitness score will increase
     def get_fitness(self):
         if self.fitness == 0:
             self.fitness = 1/float(self.total_distance())
         return self.fitness
 
+# crossover two parents
 def breed(parent1, parent2):
     child = []
     childP1 = []
@@ -69,6 +70,7 @@ def breed(parent1, parent2):
     child = childP1 + childP2
     return child
 
+# Genetic algorithm model
 class GA:
     def __init__(self, cityList, popSize, eliteSize, mutationRate, generations):
         self.cityList = cityList
@@ -82,12 +84,14 @@ class GA:
         self.mutationRate = mutationRate
         self.generations = generations
 
+    # rank the routes in the given population and return their fitnesses
     def rank_routes(self, pop):
         fitness_results = {}
         for i in range(0, len(pop)):
             fitness_results[i] = Fitness(pop[i]).get_fitness()
         return sorted(fitness_results.items(), key=operator.itemgetter(1), reverse=True)
 
+    # select the elites from the ranked population
     def selection(self, ranked_pop):
         selection_results = []
         df = pd.DataFrame(np.array(ranked_pop), columns=["Index", "Fitness"])
@@ -104,6 +108,7 @@ class GA:
                     break
         return selection_results
 
+    # this group will create the next generation
     def matingPool(self, pop, selectionResults):
         matingpool = []
         for i in range(0, len(selectionResults)):
@@ -111,7 +116,7 @@ class GA:
             matingpool.append(pop[index])
         return matingpool
 
-
+    # do crossover on the mating pool
     def breedPopulation(self, matingpool):
         children = []
         length = len(matingpool) - self.eliteSize
@@ -125,7 +130,7 @@ class GA:
             children.append(child)
         return children
 
-
+    # mutate the individual
     def mutate(self, individual):
         for swapped in range(len(individual)):
             if (random.random() < self.mutationRate):
@@ -138,7 +143,7 @@ class GA:
                 individual[swapWith] = city1
         return individual
 
-
+    # do mutation on the given population
     def mutatePopulation(self, pop):
         mutatedPop = []
 
@@ -148,7 +153,7 @@ class GA:
 
         return mutatedPop
 
-
+    # create next generation
     def nextGeneration(self):
         ranked_pop = self.rank_routes(self.population)
         selection_results = self.selection(ranked_pop)

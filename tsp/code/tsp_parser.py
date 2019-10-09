@@ -1,4 +1,5 @@
 import ga
+from tqdm import tqdm
 
 def parser(file_name):
     file = open("../data/"+file_name, 'r')
@@ -10,11 +11,11 @@ def parser(file_name):
 
     city_list = []
 
-    file.readline()
+    file.readline() #NODE_COORD_SECTION
 
-    for i in range(0, int(Dimension)):
+    for i in tqdm(range(0, int(Dimension)), desc="parsing now..."):
         x, y = file.readline().strip().split()[1:]
-        city_list.append(ga.City(float(x), float(y)))
+        city_list.append(ga.City(float(x), float(y), i))
 
     file.close()
 
