@@ -2,6 +2,7 @@ import numpy as np
 import random
 import operator
 import pandas as pd
+from tqdm import tqdm
 
 class City:
     def __init__(self, x, y, index):
@@ -76,7 +77,7 @@ class GA:
         self.cityList = cityList
         self.popSize = popSize
         population = []
-        for i in range(0, self.popSize):
+        for i in tqdm(range(0, self.popSize), desc="generate initial population now..."):
             population.append(create_route(self.cityList))
         self.population = population
         self.population = population

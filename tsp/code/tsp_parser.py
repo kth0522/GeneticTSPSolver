@@ -13,7 +13,7 @@ def parser(file_name):
 
     file.readline() #NODE_COORD_SECTION
 
-    for i in tqdm(range(0, int(Dimension)), desc="parsing now..."):
+    for i in tqdm(range(0, int(Dimension)), desc="data parsing now..."):
         x, y = file.readline().strip().split()[1:]
         city_list.append(ga.City(float(x), float(y), i))
 
